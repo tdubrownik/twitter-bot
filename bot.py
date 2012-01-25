@@ -7,7 +7,7 @@ from dateutil import parser
 from time import mktime
 
 import config
-from token import *
+import token
 
 last_timestamp = None
 formatter = logging.Formatter('[%(asctime)s - %(name)s - %(levelname)s] %(message)s')
@@ -48,8 +48,8 @@ def fetch_updates(url, options):
 def oauth_req(url, http_method = 'GET', data = {}, headers = None):
     # za https://dev.twitter.com/docs/auth/oauth/single-user-with-examples#python
     from urllib import urlencode
-    consumer = oauth.Consumer(key=consumer_key, secret=consumer_secret)
-    token = oauth.Token(key=oauth_token, secret=oauth_token_secret)
+    consumer = oauth.Consumer(key=token.consumer_key, secret=token.consumer_secret)
+    token = oauth.Token(key=token.oauth_token, secret=token.oauth_token_secret)
     client = oauth.Client(consumer, token)
     return client.request(
         url,
@@ -82,7 +82,7 @@ def main():
             fetch_updates(config.url, config.options)
             sleep(config.refresh)
         except Exception as e:
-            logger.error('Error!')
+            logger.error('Error! ' + traceback.format_exc(e))
 
 if __name__ == '__main__':
     main()
